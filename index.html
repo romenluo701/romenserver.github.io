@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romen的MC服务器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #0d1117;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 200, 0.06) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(0, 150, 255, 0.06) 0%, transparent 25%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        /* 顶部大标题 - MINECRAFT 霓虹风格 */
+        .mc-title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow:
+                0 0 8px #00ffcc,
+                0 0 18px #00aaff,
+                0 0 35px #0077ff;
+            margin-bottom: 8px;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+        .mc-subtitle {
+            font-size: 16px;
+            color: #8b949e;
+            margin-bottom: 45px;
+            text-align: center;
+        }
+
+        /* 按钮区域 - 核心调整：一键添加在最上方，更大更醒目 */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 50px;
+        }
+        /* 主按钮：一键添加服务器（最大，最上方） */
+        .btn-add {
+            padding: 34px 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 38px rgba(139, 92, 246, 0.75);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .btn-add:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 55px rgba(139, 92, 246, 0.95);
+        }
+        /* 次按钮：一键连接服务器（下方，稍小） */
+        .btn-connect {
+            padding: 28px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(90deg, #f97316, #ef4444);
+            border: none;
+            border-radius: 22px;
+            cursor: pointer;
+            box-shadow: 0 0 32px rgba(239, 68, 68, 0.65);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .btn-connect:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 45px rgba(239, 68, 68, 0.85);
+        }
+
+        /* 服务器信息卡片 */
+        .server-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border-radius: 22px;
+            padding: 32px;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.45);
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-size: 18px;
+            color: #8b949e;
+        }
+        .info-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            flex: 1;
+            margin: 0 12px;
+        }
+        .copy-btn {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 18px rgba(59, 130, 246, 0.7);
+        }
+        .copy-btn.copied {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部MC霓虹标题 -->
+    <h1 class="mc-title">MINECRAFT</h1>
+    <p class="mc-subtitle">Romen的服务器 · 基岩版一键连接</p>
+
+    <!-- 按钮区：一键添加在最上方（大按钮），一键连接在下方 -->
+    <div class="btn-container">
+        <button class="btn-add" onclick="addServer()">📝 一键添加服务器</button>
+        <button class="btn-connect" onclick="connectServer()">🔗 一键连接服务器</button>
+    </div>
+
+    <!-- 服务器信息卡片（名称、IP、端口 + 复制） -->
+    <div class="server-card">
+        <div class="info-item">
+            <span class="info-label">服务器名称</span>
+            <span class="info-value" id="serverName"></span>
+            <button class="copy-btn" onclick="copyText('serverName')">Copy</button>
+        </div>
+        <div class="info-item">
+            <span class="info-label">服务器IP</span>
+            <span class="info-value" id="serverIp"></span>
+            <button class="copy-btn" onclick="copyText('serverIp')">Copy</button>
+        </div>
+        <div class="info-item">
+            <span class="info-label">服务器端口</span>
+            <span class="info-value" id="serverPort"></span>
+            <button class="copy-btn" onclick="copyText('serverPort')">Copy</button>
+        </div>
+    </div>
+
+    <script>
+        // 👇 已填入你的最新服务器信息 👇
+        const SERVER_NAME = "Romen的服务器";
+        const SERVER_IP = "cd-1.frp.one";
+        const SERVER_PORT = "14963";
+
+        // 页面加载时自动填充信息
+        window.onload = function() {
+            document.getElementById("serverName").innerText = SERVER_NAME;
+            document.getElementById("serverIp").innerText = SERVER_IP;
+            document.getElementById("serverPort").innerText = SERVER_PORT;
+        }
+
+        // 复制功能
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                btn.innerText = "已复制!";
+                btn.classList.add("copied");
+                setTimeout(() => {
+                    btn.innerText = "Copy";
+                    btn.classList.remove("copied");
+                }, 1000);
+            });
+        }
+
+        // 一键添加服务器（最上方大按钮）
+        function addServer() {
+            window.location.href = `minecraft://?addExternalServer=${SERVER_NAME}|${SERVER_IP}:${SERVER_PORT}`;
+        }
+
+        // 一键连接服务器（下方按钮）
+        function connectServer() {
+            window.location.href = `minecraft://connect/?serverUrl=${SERVER_IP}&serverPort=${SERVER_PORT}`;
+        }
+    </script>
+</body>
+</html>
