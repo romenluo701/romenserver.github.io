@@ -164,7 +164,10 @@
         </div>
         <div class="info-item">
             <span class="info-label">服务器IP</span>
-            <span class="info-value" id="serverIp"></span>
+            <div style="flex:1; margin:0 12px;">
+                <span class="info-value" id="serverIp"></span>
+                <div style="font-size:12px; color:#8b949e; margin-top:3px;">9666.fun 前面的可以省略</div>
+            </div>
             <button class="copy-btn" onclick="copyText('serverIp')">Copy</button>
         </div>
         <div class="info-item">
@@ -198,12 +201,12 @@
                     btn.innerText = "Copy";
                     btn.classList.remove("copied");
                 }, 1000);
-            });
+            }).catch(err => {});
         }
 
         // 一键添加服务器（最上方大按钮）
         function addServer() {
-            window.location.href = `minecraft://?addExternalServer=${SERVER_NAME}|${SERVER_IP}:${SERVER_PORT}`;
+            window.location.href = `minecraft://?addExternalServer=${encodeURIComponent(SERVER_NAME)}|${SERVER_IP}:${SERVER_PORT}`;
         }
 
         // 一键连接服务器（下方按钮）
